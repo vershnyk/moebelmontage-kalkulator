@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Möbelmontage Kalkulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #ergebnis {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #28a745;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Möbelmontage Kalkulator</h1>
+
+    <label>Menge der Möbelstücke:
+      <input type="number" id="anzahl" value="1" min="1">
+    </label>
+
+    <label>Montageschwierigkeit:
+      <select id="schwierigkeit">
+        <option value="einfach">Einfach</option>
+        <option value="mittel">Mittel</option>
+        <option value="komplex">Komplex</option>
+      </select>
+    </label>
+
+    <label>Lieferung vom Möbelhaus (in km):
+      <input type="number" id="km" value="10">
+    </label>
+
+    <label>Stockwerk:
+      <input type="number" id="stockwerk" value="2">
+    </label>
+
+    <label>Aufzug vorhanden?
+      <select id="aufzug">
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </label>
+
+    <label>Rabatt (%):
+      <input type="number" id="rabatt" value="0">
+    </label>
+
+    <label>Demontage alte Möbel?
+      <select id="demontage">
+        <option value="nein">Nein</option>
+        <option value="ja">Ja</option>
+      </select>
+    </label>
+
+    <label>Verpackung entsorgen?
+      <select id="verpackung">
+        <option value="nein">Nein</option>
+        <option value="ja">Ja</option>
+      </select>
+    </label>
+
+    <button onclick="berechne()">Berechnen</button>
+    <div id="ergebnis"></div>
+  </div>
+
+  <script>
+    function berechne() {
+      const anzahl = parseInt(document.getElementById('anzahl').value);
+      const schwierigkeit = document.getElementById('schwierigkeit').value;
+      const km = parseFloat(document.getElementById('km').value);
+      const stockwerk = parseInt(document.getElementById('stockwerk').value);
+      const aufzug = document.getElementById('aufzug').value === 'ja';
+      const rabatt = parseFloat(document.getElementById('rabatt').value);
+      const demontage = document.getElementById('demontage').value === 'ja';
+      const verpackung = document.getElementById('verpackung').value === 'ja';
+
+      let basispreis = 0;
+      if (schwierigkeit === 'einfach') basispreis = 30;
+      else if (schwierigkeit === 'mittel') basispreis = 50;
+      else if (schwierigkeit === 'komplex') basispreis = 80;
+
+      const montage = basispreis * anzahl;
+      const lieferung = km * 0.8;
+      const stockwerkPreis = aufzug ? (2 * stockwerk * anzahl) : (5 * stockwerk * anzahl);
+      const demontagePreis = demontage ? (25 * anzahl) : 0;
+      const verpackungPreis = verpackung ? 15 : 0;
+
+      const gesamt = montage + lieferung + stockwerkPreis + demontagePreis + verpackungPreis;
+      const rabattBetrag = rabatt > 0 ? (gesamt * rabatt / 100) : 0;
+      const endpreis = gesamt - rabattBetrag;
+
+      document.getElementById('ergebnis').innerText =
+        `Gesamtkosten: €${endpreis.toFixed(2)} (inkl. Rabatt: €${rabattBetrag.toFixed(2)})`;
+    }
+  </script>
+</body>
+</html>
